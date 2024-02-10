@@ -19,13 +19,13 @@ class UserRepository
      * @throws UserAlreadyExistsException
      * @throws DatabaseException
      */
-    public function registerUser(string $username, string $email, string $password): User
+    public function create(string $username, string $email, string $password): User
     {
-        if ($this->userExistsByEmail($email)) {
+        if ($this->existsByEmail($email)) {
             throw new UserAlreadyExistsException('User with this email already exists');
         }
 
-        if ($this->userExistsByUsername($username)) {
+        if ($this->existsByUsername($username)) {
             throw new UserAlreadyExistsException('User with this username already exists');
         }
 
@@ -40,13 +40,13 @@ class UserRepository
             throw new DatabaseException('Database error');
         }
 
-        return $this->getUserById((int)$this->database->lastInsertId());
+        return $this->getById((int)$this->database->lastInsertId());
     }
 
     /**
      * @throws DatabaseException
      */
-    public function getUserById(int $userId): User
+    public function getById(int $userId): User
     {
         try {
             $statement = $this->database->prepare('SELECT * FROM users WHERE id = :id');
@@ -65,7 +65,7 @@ class UserRepository
         return User::fromDatabase($userData);
     }
 
-    public function userExistsByEmail(string $email): bool
+    public function existsByEmail(string $email): bool
     {
         try {
             $statement = $this->database->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
@@ -80,7 +80,7 @@ class UserRepository
         return $count > 0;
     }
 
-    public function userExistsByUsername(string $username): bool
+    public function existsByUsername(string $username): bool
     {
         try {
             $statement = $this->database->prepare('SELECT COUNT(*) FROM users WHERE username = :username');

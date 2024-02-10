@@ -7,6 +7,7 @@ use LinkCollectionBackend\Action\Link\CreateLinkAction;
 use LinkCollectionBackend\Action\Page\CreatePageAction;
 use LinkCollectionBackend\Action\Page\GetPagesFromUserAction;
 use LinkCollectionBackend\Action\User\AuthAction;
+use LinkCollectionBackend\Action\User\RefreshTokenAction;
 use LinkCollectionBackend\Action\User\RegisterAction;
 use LinkCollectionBackend\Middleware\AuthMiddleware;
 use LinkCollectionBackend\Middleware\PreflightMiddleware;
@@ -21,6 +22,7 @@ class Routes
             $group->group('/auth', function (RouteCollectorProxy $group) {
                 $group->post('/login', [AuthAction::class, 'handleAuthAction']);
                 $group->post('/register', [RegisterAction::class, 'handleRegisterAction']);
+                $group->post('/refreshToken', [RefreshTokenAction::class, 'handleRefreshTokenAction']);
             });
 
             $group->group('/page', function (RouteCollectorProxy $group) {

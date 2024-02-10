@@ -3,24 +3,30 @@ declare(strict_types=1);
 
 namespace LinkCollectionBackend\Repository\User;
 
+use Firebase\JWT\JWT;
 use LinkCollectionBackend\Exception\DatabaseException;
 use LinkCollectionBackend\Exception\LoginException;
-use LinkCollectionBackend\Value\AuthObject;
+use LinkCollectionBackend\Service\TokenService;
+use LinkCollectionBackend\Value\TokenObject;
+use LinkCollectionBackend\Value\User;
 use PDO;
 use PDOException;
 
 class AuthRepository
 {
     public function __construct(
-        private readonly PDO $database,
-        private readonly UserRepository $userRepository
-    ) {}
+        private readonly PDO            $database,
+        private readonly UserRepository $userRepository,
+        private readonly TokenService   $tokenService,
+    )
+    {
+    }
 
     /**
      * @throws DatabaseException
      * @throws LoginException
      */
-    public function loginUser(string $email, string $password): AuthObject
+    public function login(string $email, string $password): TokenObject
     {
         try {
             $statement = $this->database->prepare('SELECT `id`, `password` FROM `users` WHERE `email` = :email');
@@ -36,18 +42,9 @@ class AuthRepository
                 throw new LoginException('Password is wrong');
             }
 
-            $user = $this->userRepository->getUserById($result['id']);
-            $token = [
-                'iat' => time(),
-                'exp' => time() + (7 * 24 * 60 * 60),
-                'data' => [
-                    'id' => $user->getUserId(),
-                    'email' => $user->getEmail(),
-                    'username' => $user->getUsername(),
-                ],
-            ];
+            $user = $this->userRepository->getById($result['id']);
 
-            return AuthObject::fromTokenData($token, $user);
+            return $this->tokenService->generateToken($user, time() + (7 * 24 * 60 * 60));
         } catch (PDOException) {
             throw new DatabaseException('Could not login user');
         }

@@ -5,8 +5,8 @@ namespace LinkCollectionBackend\Service\Link;
 
 use LinkCollectionBackend\Exception\LinkCollectionException;
 use LinkCollectionBackend\Repository\Link\LinkRepository;
-use LinkCollectionBackend\Value\AuthObject;
 use LinkCollectionBackend\Value\ResultObject;
+use LinkCollectionBackend\Value\TokenObject;
 
 class LinkService
 {
@@ -19,13 +19,13 @@ class LinkService
     public function createLink(string $authToken, array $linkData): ResultObject
     {
         try {
-            $token = AuthObject::fromEncodedToken($authToken);
+            $token = TokenObject::fromEncodedToken($authToken);
             $pageId = (int)$linkData['pageId'];
             $ownerId = $token->getAuthUser()->getUserId();
             $name = $linkData['name'];
             $url = $linkData['url'];
 
-            $this->linkRepository->createLink($pageId, $ownerId, $name, $url);
+            $this->linkRepository->create($pageId, $ownerId, $name, $url);
         } catch (LinkCollectionException $e) {
             return ResultObject::from($e->getMessage(), $e->getCode());
         }

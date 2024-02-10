@@ -23,10 +23,10 @@ class LinkRepository
      * @throws DatabaseException
      * @throws NotOwnerOfPageException
      */
-    public function createLink(int $pageId, int $ownerId, string $name, string $url): PageLink
+    public function create(int $pageId, int $ownerId, string $name, string $url): PageLink
     {
         try {
-            if (!$this->pageRepository->isOwnerOfPage($pageId, $ownerId)) {
+            if (!$this->pageRepository->isOwner($pageId, $ownerId)) {
                 throw new NotOwnerOfPageException('Not owner of page');
             }
 
@@ -53,7 +53,7 @@ class LinkRepository
     /**
      * @throws DatabaseException
      */
-    public function getLinksByPageId(int $pageId): array
+    public function getById(int $pageId): array
     {
         try {
             $statement = $this->database->prepare('SELECT * FROM links WHERE page_id = :pageId');

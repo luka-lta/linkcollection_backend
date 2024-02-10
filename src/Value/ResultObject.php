@@ -20,6 +20,13 @@ final class ResultObject
 
     public function getResponseArray(): array
     {
+        if ($this->data === null) {
+            return [
+                'message' => $this->message,
+                'statusCode' => $this->statusCode
+            ];
+        }
+
         return [
             'message' => $this->message,
             'statusCode' => $this->statusCode,

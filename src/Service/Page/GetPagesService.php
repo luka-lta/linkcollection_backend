@@ -5,7 +5,7 @@ namespace LinkCollectionBackend\Service\Page;
 
 use LinkCollectionBackend\Exception\LinkCollectionException;
 use LinkCollectionBackend\Repository\Page\PageRepository;
-use LinkCollectionBackend\Value\AuthObject;
+use LinkCollectionBackend\Value\TokenObject;
 use LinkCollectionBackend\Value\ResultObject;
 
 class GetPagesService
@@ -19,8 +19,8 @@ class GetPagesService
     public function getPages(string $token): ResultObject
     {
         try {
-            $authObject = AuthObject::fromEncodedToken($token);
-            $pages = $this->pageRepository->getPageByOwnerId($authObject->getAuthUser()->getUserId());
+            $authObject = TokenObject::fromEncodedToken($token);
+            $pages = $this->pageRepository->getByOwnerId($authObject->getAuthUser()->getUserId());
         } catch (LinkCollectionException $e) {
             return ResultObject::from($e->getMessage(), $e->getCode());
         }

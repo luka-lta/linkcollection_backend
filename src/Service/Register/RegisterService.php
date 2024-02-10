@@ -16,7 +16,7 @@ class RegisterService
     public function registerUser(array $parsedBody): ResultObject
     {
         try {
-            $this->userRepository->registerUser($parsedBody['username'], $parsedBody['email'], $parsedBody['password']);
+            $this->userRepository->create($parsedBody['username'], $parsedBody['email'], $parsedBody['password']);
             return ResultObject::from('User registered', 201);
         } catch (LinkCollectionException $exception) {
             return ResultObject::from($exception->getMessage(), $exception->getCode());

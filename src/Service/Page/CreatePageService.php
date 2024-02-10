@@ -5,7 +5,7 @@ namespace LinkCollectionBackend\Service\Page;
 
 use LinkCollectionBackend\Exception\LinkCollectionException;
 use LinkCollectionBackend\Repository\Page\PageRepository;
-use LinkCollectionBackend\Value\AuthObject;
+use LinkCollectionBackend\Value\TokenObject;
 use LinkCollectionBackend\Value\ResultObject;
 
 class CreatePageService
@@ -16,10 +16,10 @@ class CreatePageService
 
     public function createPage(string $authToken, array $pageData): ResultObject
     {
-        $authObject = AuthObject::fromEncodedToken($authToken);
+        $authObject = TokenObject::fromEncodedToken($authToken);
 
         try {
-            $this->pageRepository->createPage(
+            $this->pageRepository->create(
                 $authObject->getAuthUser()->getUserId(),
                 $pageData['title'],
                 $pageData['theme']

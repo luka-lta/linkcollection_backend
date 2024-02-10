@@ -5,7 +5,7 @@ namespace LinkCollectionBackend\Repository\Page;
 
 use LinkCollectionBackend\Exception\DatabaseException;
 use LinkCollectionBackend\Exception\PageAlreadyExistsException;
-use LinkCollectionBackend\Value\Page;
+use LinkCollectionBackend\Value\Page\Page;
 use PDO;
 use PDOException;
 
@@ -21,9 +21,9 @@ class PageRepository
      * @throws DatabaseException
      * @throws PageAlreadyExistsException
      */
-    public function createPage(int $ownerId, string $title, ?string $theme): Page
+    public function create(int $ownerId, string $title, ?string $theme): Page
     {
-        if ($this->pageExistsByOwnerId($ownerId)) {
+        if ($this->existsByOwnerId($ownerId)) {
             throw new PageAlreadyExistsException('Page already exists');
         }
 
@@ -49,7 +49,7 @@ class PageRepository
     /**
      * @throws DatabaseException
      */
-    public function getPageByPageId(int $pageId): Page
+    public function getById(int $pageId): Page
     {
         try {
             $statement = $this->database->prepare('SELECT * FROM pages WHERE id = :id');
@@ -67,7 +67,7 @@ class PageRepository
     /**
      * @throws DatabaseException
      */
-    public function getPageByOwnerId(int $ownerId): Page
+    public function getByOwnerId(int $ownerId): Page
     {
         try {
             $statement = $this->database->prepare('SELECT * FROM pages WHERE owner_id = :owner_id');
@@ -89,7 +89,7 @@ class PageRepository
     /**
      * @throws DatabaseException
      */
-    public function isOwnerOfPage(int $pageId, int $ownerId): bool
+    public function isOwner(int $pageId, int $ownerId): bool
     {
         try {
             $statement = $this->database->prepare('SELECT COUNT(*) FROM pages WHERE owner_id = :owner_id AND id = :id');
@@ -108,7 +108,7 @@ class PageRepository
     /**
      * @throws DatabaseException
      */
-    public function pageExistsByOwnerId(int $ownerId): bool
+    public function existsByOwnerId(int $ownerId): bool
     {
         try {
             $statement = $this->database->prepare('SELECT COUNT(*) FROM pages WHERE owner_id = :owner_id');

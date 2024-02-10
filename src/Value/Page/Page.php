@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace LinkCollectionBackend\Value;
+namespace LinkCollectionBackend\Value\Page;
 
 final class Page
 {
