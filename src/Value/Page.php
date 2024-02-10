@@ -27,6 +27,16 @@ final class Page
         );
     }
 
+    public function toArray(): array
+    {
+        return [
+            'pageId' => $this->pageId,
+            'ownerId' => $this->ownerId,
+            'title' => $this->title,
+            'theme' => $this->theme
+        ];
+    }
+
     public function getPageId(): int
     {
         return $this->pageId;

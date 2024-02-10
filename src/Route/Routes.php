@@ -5,9 +5,11 @@ namespace LinkCollectionBackend\Route;
 
 use LinkCollectionBackend\Action\Link\CreateLinkAction;
 use LinkCollectionBackend\Action\Page\CreatePageAction;
+use LinkCollectionBackend\Action\Page\GetPagesFromUserAction;
 use LinkCollectionBackend\Action\User\AuthAction;
 use LinkCollectionBackend\Action\User\RegisterAction;
 use LinkCollectionBackend\Middleware\AuthMiddleware;
+use LinkCollectionBackend\Middleware\PreflightMiddleware;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
@@ -23,6 +25,8 @@ class Routes
 
             $group->group('/page', function (RouteCollectorProxy $group) {
                 $group->post('/create', [CreatePageAction::class, 'handleCreatePageAction'])
+                    ->add(AuthMiddleware::class);
+                $group->get('/get', [GetPagesFromUserAction::class, 'handleGetPagesFromUser'])
                     ->add(AuthMiddleware::class);
             });
 

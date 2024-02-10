@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace LinkCollectionBackend\Action\User;
+namespace LinkCollectionBackend\Action\Page;
 
-use LinkCollectionBackend\Service\Register\RegisterService;
+use LinkCollectionBackend\Service\Page\GetPagesService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class RegisterAction
+class GetPagesFromUserAction
 {
     public function __construct(
-        private readonly RegisterService $registerService
+        private readonly GetPagesService $pagesService,
     )
     {
     }
 
-    public function handleRegisterAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function handleGetPagesFromUser(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $parsedBody = $request->getParsedBody();
+        $authHeader = $request->getHeaderLine('Authorization');
 
-        $result = $this->registerService->registerUser($parsedBody);
+        $result = $this->pagesService->getPages($authHeader);
         $response->getBody()->write(json_encode($result->getResponseArray()));
 
         return $response

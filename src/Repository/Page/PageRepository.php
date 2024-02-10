@@ -79,6 +79,10 @@ class PageRepository
             throw new DatabaseException('Database error');
         }
 
+        if ($pageData === false) {
+            throw new DatabaseException('No pages exists for this user');
+        }
+
         return Page::fromDatabase($pageData);
     }
 
